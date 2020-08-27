@@ -19,4 +19,18 @@ app.use(methodOverride(function (req, res) {
 }));
 
 rotas(app);
+
+app.use(function(req, resp, next) {
+  return resp.status(404).marko(
+    require('../views/books/erros/404.marko')
+  );
+});
+
+app.use(function (erro, req, resp, next) {
+  return resp.status(500).marko(
+      require('../views/books/erros/500.marko')
+  );
+
+});
+
 module.exports = app;
