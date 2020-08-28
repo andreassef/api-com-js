@@ -1,6 +1,7 @@
 const {check} = require('express-validator/check');
 const BookController = require('../controllers/bookController');
 const { routes } = require('../controllers/bookController');
+const Book = require('../model/bookEntity');
 const bookController = new BookController();
 const routesBooks = BookController.routes();
 
@@ -27,14 +28,14 @@ module.exports = (app) => {
         resp.marko(require('../../views/books/form/form.marko'),{ livro: {} })
     });
 
-    app.post(routesBooks.lista, [
-        check('titulo').isLength({ min: 5 }).withMessage('The title needs at least 5 characters!'),
-        check('preco').isCurrency().withMessage('The price needs be monetary!')
-        ], bookController.create());
+    //app.route(routesBooks.cadastro).get(bookController)
 
-    app.put(routesBooks.lista, bookController.update());
 
-    app.get(routesBooks.buscaPorId, bookController.findById());
+    app.post(routesBooks.cadastro, Book.validations(), bookController.create());
+
+    app.put(routesBooks.cadastro, bookController.update());
+
+    app.get(routesBooks.cadastro, bookController.findById());
 
     app.delete(routesBooks.delecao, bookController.delete());
 

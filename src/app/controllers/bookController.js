@@ -2,7 +2,6 @@ const db = require('../../config/database');
 const LivrosDao = require('../dao/livrosDao');
 const { validationResult } = require('express-validator/check');
 class BookController {
-
     static routes() {
         return {
             lista: '/livros',
