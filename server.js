@@ -1,7 +1,7 @@
-const http = require('http');
-const app = require('./src/config/custom-express');
+const http = require('http'); // com o modulo http do nodejs conseguimos fazer requisições http
+const app = require('./src/config/custom-express'); // estamos trazendo as funcionalidades do modulo que criamos.
 
-app.listen(3000, function(){
+app.listen(3000, function(){ // aqui setamos a porta que servirá como nosso servidor e retornando um callback
     console.log("Servidor rodando na porta 3000");
 });
 

@@ -10,6 +10,7 @@ var marko_template = module.exports = require("marko/src/html").t(__filename),
     marko_loadTag = marko_helpers.t,
     component_globals_tag = marko_loadTag(require("marko/src/components/taglib/component-globals-tag")),
     marko_escapeXmlAttr = marko_helpers.xa,
+    marko_forEach = marko_helpers.f,
     marko_escapeXml = marko_helpers.x,
     init_components_tag = marko_loadTag(require("marko/src/components/taglib/init-components-tag")),
     await_reorderer_tag = marko_loadTag(require("marko/src/taglibs/async/await-reorderer-tag"));
@@ -29,6 +30,24 @@ function render(input, out, __component, component, state) {
       "\"></div>");
   }
 
+  if (data.errosValidacao) {
+    out.w("<div>");
+
+    var for__24 = 0;
+
+    marko_forEach(data.errosValidacao, function(erro) {
+      var keyscope__25 = "[" + ((for__24++) + "]");
+
+      out.w("<div class=\"alert alert-danger\">" +
+        marko_escapeXml(erro.param) +
+        " - " +
+        marko_escapeXml(erro.msg) +
+        "</div>");
+    });
+
+    out.w("</div>");
+  }
+
   out.w("<div class=\"form-group\"><label for=\"titulo\">Titulo:</label><input type=\"text\" id=\"titulo\" name=\"titulo\" value=\"" +
     marko_escapeXmlAttr(data.livro.titulo) +
     "\" placeholder=\"coloque o titulo\" class=\"form-control\"></div><div class=\"form-group\"><label for=\"preco\">Preço:</label><input type=\"text\" id=\"preco\" name=\"preco\" placeholder=\"150.25\" value=\"" +
@@ -39,7 +58,7 @@ function render(input, out, __component, component, state) {
 
   init_components_tag({}, out);
 
-  await_reorderer_tag({}, out, __component, "44");
+  await_reorderer_tag({}, out, __component, "48");
 
   out.w("</body></html>");
 }

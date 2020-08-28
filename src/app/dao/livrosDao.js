@@ -64,11 +64,10 @@ class LivrosDao {
 
     find(id) {
         return new Promise((resolve, reject) => {
-            this._db.get(`SELECT * FROM LIVROS WHERE id=?`, 
+            this._db.all(`SELECT * FROM livros WHERE id = ?`, 
             [id],
             (err, livro) => {
                 if(err) {
-                    console.log(err);
                     return reject('Livro nao encontrado')
                 }
                 return resolve(livro);
@@ -79,7 +78,7 @@ class LivrosDao {
     remove(id) {
 
         return new Promise((resolve, reject) => {
-            this._db.run(
+            this._db.get(
                 `
                     DELETE 
                     FROM livros
