@@ -1,0 +1,54 @@
+const {uuid, v4} = require('uuid');
+const sessao = require('express-session');
+const passport = require('passport');
+const UsuarioDao = require('../app/dao/usuarioDao');
+const LocalStrategy = require('passport-local').Strategy;
+
+const UsuarioDao = require('../app/dao/usuarioDao');
+const db = require('./database');
+
+module.exports = (app) => {
+    passport.use(new LocalStrategy(
+        {
+            usernameField: 'email',
+            passwordField: 'senha'
+        },
+        (email, senha, done) => {
+            const usuarioDao = new UsuarioDao(db);
+            usuarioDao.buscaPorEmail(email)
+                    .then( usuario => {
+                        if(!usuario || senha != usuario.senha) {
+                            return done(null, false, {
+                                mensagem: 'Login ou senha ou ambos incorretos!'
+                            });
+                        }
+                        return done( null, usuario);
+                    }).catch(erro => done(erro, false));
+
+        }
+    ));
+
+    passport.serializeUser((usuario, done) => {
+        const usuarioSessao = {
+            nome: usuario.nome_completo,
+            email: usuario.email
+        }
+        done(null, usuarioSessao);
+    });
+
+    passport.deserializeUser((usuarioSessao, done) => {
+        done(null, usuarioSessao);
+    })
+
+    app.use(sessao({
+        secret: 'node alura',
+        genid: function(req) {
+            return uuid();
+        },
+        resave: false,
+        saveUninitialized: false
+    }));
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+}
