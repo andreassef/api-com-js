@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator/check');
 class BookController {
     static routes() {
         return {
+            autenticadas: '/livros*',
             lista: '/livros',
             cadastro: '/livros/form',
             edicao: '/livros/form/:id',
@@ -51,6 +52,16 @@ class BookController {
         return function(req, resp){
             console.log(req.body);
             const livrosDao = new LivrosDao(db);
+            const erros = validationResult(req);
+            if (!erros.isEmpty()) {
+                return resp.marko(
+                    require('../../views/books/form/form.marko'),
+                    { 
+                        livro: req.body, 
+                        errosValidacao: erros.array()
+                    }
+                );
+            }
             livrosDao.update(req.body)
                 .then(resp.redirect(BookController.routes().lista))
                 .catch(erro => console.log(erro));
@@ -78,7 +89,7 @@ class BookController {
                     console.log(livro);
                     resp.marko(
                         require('../../views/books/form/form.marko'),
-                        { livro : livro }
+                        {livro : livro}
                     )
                     }).catch(erro => console.log(erro));
        }

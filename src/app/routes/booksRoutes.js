@@ -2,8 +2,17 @@ const BookController = require('../controllers/bookController');
 const Book = require('../model/bookEntity');
 const bookController = new BookController();
 const routesBooks = BookController.routes();
+const HomeController = require('../controllers/homeController');
 
 module.exports = (app) => {
+
+    app.use(routesBooks.autenticadas, function(req, resp, next){
+        if(req.isAuthenticated()){
+            next();
+        } else {
+            resp.redirect(HomeController.rotas().login);
+        }
+    })
 
     // Lista todos os livros
     app.get(routesBooks.lista, bookController.index());

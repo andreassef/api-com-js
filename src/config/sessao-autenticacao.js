@@ -1,18 +1,17 @@
-const {uuid, v4} = require('uuid');
+const uuid = require('uuid');
 const sessao = require('express-session');
 const passport = require('passport');
-const UsuarioDao = require('../app/dao/usuarioDao');
 const LocalStrategy = require('passport-local').Strategy;
 
 const UsuarioDao = require('../app/dao/usuarioDao');
-const db = require('./database');
+const db = require('./database');   
 
 module.exports = (app) => {
     passport.use(new LocalStrategy(
         {
             usernameField: 'email',
             passwordField: 'senha'
-        },
+        },  
         (email, senha, done) => {
             const usuarioDao = new UsuarioDao(db);
             usuarioDao.buscaPorEmail(email)
@@ -22,7 +21,7 @@ module.exports = (app) => {
                                 mensagem: 'Login ou senha ou ambos incorretos!'
                             });
                         }
-                        return done( null, usuario);
+                        return done(null, usuario);
                     }).catch(erro => done(erro, false));
 
         }
@@ -32,7 +31,7 @@ module.exports = (app) => {
         const usuarioSessao = {
             nome: usuario.nome_completo,
             email: usuario.email
-        }
+        };
         done(null, usuarioSessao);
     });
 
@@ -48,7 +47,12 @@ module.exports = (app) => {
         resave: false,
         saveUninitialized: false
     }));
-
+    
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // app.use(function (req, resp, next) {
+    //     req.passport = passport;
+    //     next();
+    // })
 }

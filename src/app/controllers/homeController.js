@@ -1,3 +1,6 @@
+const BookController = require('./bookController');
+const passport = require('passport');
+
 class HomeController {
 
     static rotas() {
@@ -21,7 +24,7 @@ class HomeController {
                     </html>
                 `
             );
-        }
+        };
     }
 
     login() {
@@ -31,9 +34,23 @@ class HomeController {
     }
 
     efetuaLogin() {
-        return function(req, resp) {
-            
-        }
+        return function(req, resp, next) {
+            //const passport = req.passport;
+            passport.authenticate('local', (erro, usuario, info) => {
+                if(info){
+                    return resp.marko(require('../../views/base/login.marko'));
+                }
+                if(erro){
+                    return next(erro);
+                }
+                req.login(usuario, (erro) => {
+                    if(erro) {
+                        return next(erro);
+                    }
+                    return resp.redirect(BookController.routes().lista);
+                });
+            }) (req, resp, next);
+        };
     }
 }
 

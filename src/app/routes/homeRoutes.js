@@ -2,9 +2,10 @@ const HomeController = require('../controllers/homeController');
 const homeController = new HomeController();
 
 module.exports = (app) => {
+    const rotasBase = HomeController.rotas();
+
     app.get('/', homeController.home());
 
-    app.route(HomeController.rotas().login)
-        .get(homeController.login())
-        .post(homeController.efetuaLogin());
+    app.get(rotasBase.login, homeController.login());
+    app.post(rotasBase.login, homeController.efetuaLogin());   
 }
